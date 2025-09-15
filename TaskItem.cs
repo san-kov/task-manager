@@ -23,7 +23,7 @@ public class TaskItem : IPrintable
         };
     }
 
-    public void PrintInfo()
+    public virtual void PrintInfo()
     {
         var due = DueDate is null ? "—" : DueDate.ToString();
         Console.WriteLine($"{Id}. {Title,-20} приоритет: {ConvertPriority(Priority)}, дедлайн: {due}");

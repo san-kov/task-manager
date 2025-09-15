@@ -59,7 +59,9 @@ for (int i = 0; i < 5; i++)
 
 }
 
-foreach (TaskItem t in tasks)
+IEnumerable<IPrintable> printable = tasks;
+
+foreach (var t in printable)
 {
     t.PrintInfo();
 }
@@ -86,7 +88,7 @@ catch
 }
 
 
-public class TaskItem
+public class TaskItem : IPrintable
 {
     public int Id { get; init; }
     public string Title { get; init; } = "";
@@ -137,4 +139,9 @@ public readonly struct TaskDate
 
     public override string ToString() => $"{Year:D4}-{Month:D2}-{Day:D2}";
 
+}
+
+public interface IPrintable
+{
+    void PrintInfo();
 }

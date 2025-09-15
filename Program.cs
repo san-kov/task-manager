@@ -38,24 +38,24 @@ for (int i = 0; i < 5; i++)
     string? answer = Console.ReadLine();
     TaskDate? date = null;
 
-    if (!string.IsNullOrEmpty(answer) && answer.ToLower() == "да")
+    if (!string.IsNullOrEmpty(answer) && answer.Equals("да", StringComparison.OrdinalIgnoreCase))
     {
         Console.WriteLine("Введите дату YYYY-MM-DD");
-        string? dateString = Console.ReadLine();
-        try
+        var dateString = Console.ReadLine();
+
+        if (DateOnly.TryParseExact(dateString, "yyyy-MM-dd", out var d))
         {
-            DateTime dateInput = DateTime.Parse(dateString!);
-            date = new TaskDate(dateInput.Year, dateInput.Month, dateInput.Day);
+            date = new TaskDate(d.Year, d.Month, d.Day);
         }
-        catch
+        else
         {
             Console.WriteLine("Неверная дата");
         }
+
     }
 
     TaskItem taskItem = new TaskItem(i + 1, task, priority) { DueDate = date };
     tasks.Add(taskItem);
-
 
 }
 
@@ -113,11 +113,12 @@ public class TaskItem
 
     public void PrintInfo()
     {
-        Console.WriteLine($"{Id}. {Title,-20} приоритет: {ConvertPriority(Priority)}, дедлайн: {DueDate}");
+        var due = DueDate is null ? "—" : DueDate.ToString();
+        Console.WriteLine($"{Id}. {Title,-20} приоритет: {ConvertPriority(Priority)}, дедлайн: {due}");
     }
 }
 
-public struct TaskDate
+public readonly struct TaskDate
 {
     public int Year { get; }
     public int Month { get; }
@@ -125,8 +126,8 @@ public struct TaskDate
 
     public TaskDate(int year, int month, int day)
     {
-        if (year < 0) throw new ArgumentOutOfRangeException();
-        if (month < 0 || month > 12) throw new ArgumentOutOfRangeException();
+        if (year < 1) throw new ArgumentOutOfRangeException();
+        if (month < 1 || month > 12) throw new ArgumentOutOfRangeException();
         if (day < 1 || day > 31) throw new ArgumentOutOfRangeException();
 
         Year = year;

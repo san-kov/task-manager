@@ -1,5 +1,5 @@
 ﻿Console.InputEncoding = System.Text.Encoding.GetEncoding("utf-16");
-List<TaskItem> tasks = new();
+IRepository<TaskItem> repo = new InMemoryRepository<TaskItem>();
 
 for (int i = 0; i < 5; i++)
 {
@@ -19,19 +19,16 @@ for (int i = 0; i < 5; i++)
     string? priorityText = Console.ReadLine();
     int priority = 1;
 
-    if (!string.IsNullOrEmpty(priorityText))
+
+    if (int.TryParse(priorityText, out priority))
     {
-        try
-        {
-            priority = int.Parse(priorityText);
-            if (priority < 1 || priority > 3) throw new ArgumentOutOfRangeException();
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("Неправильный диапазон");
-            i--;
-            continue;
-        }
+        if (priority < 1 || priority > 3) throw new ArgumentOutOfRangeException();
+    }
+    else
+    {
+        Console.WriteLine("Неправильный диапазон");
+        i--;
+        continue;
     }
 
     Console.WriteLine("Дедлайн: да/нет");
@@ -62,11 +59,12 @@ for (int i = 0; i < 5; i++)
         string? project = Console.ReadLine();
         Console.WriteLine("Часы: ");
         string? hours = Console.ReadLine();
+        int id = repo.GetAll().Count + 1;
 
         if (int.TryParse(hours, out var intHours) && !string.IsNullOrEmpty(project))
         {
-            WorkTask taskItem = new WorkTask(i + 1, task, priority, project, intHours) { DueDate = date };
-            tasks.Add(taskItem);
+            WorkTask taskItem = new WorkTask(id, task, (Priority)priority, project, intHours) { DueDate = date };
+            repo.Add(taskItem);
         }
         else
         {
@@ -75,13 +73,13 @@ for (int i = 0; i < 5; i++)
     }
     else
     {
-        TaskItem taskItem = new TaskItem(i + 1, task, priority) { DueDate = date };
-        tasks.Add(taskItem);
+        TaskItem taskItem = new TaskItem(i + 1, task, (Priority)priority) { DueDate = date };
+        repo.Add(taskItem);
     }
 
 }
 
-IEnumerable<IPrintable> printable = tasks;
+IEnumerable<IPrintable> printable = repo.GetAll();
 
 foreach (var t in printable)
 {
@@ -95,12 +93,10 @@ try
 {
     int filterInt = int.Parse(filter!);
 
-    foreach (var i in tasks)
+    foreach (var i in repo.GetAll().Where(i => i.Priority == (Priority)filterInt))
     {
-        if (i.Priority == filterInt)
-        {
-            i.PrintInfo();
-        }
+        i.PrintInfo();
+
     }
 
 }

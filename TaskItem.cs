@@ -1,24 +1,24 @@
-public class TaskItem : IPrintable
+public class TaskItem : IPrintable, IHasId
 {
     public int Id { get; init; }
     public string Title { get; init; } = "";
-    public int Priority { get; init; }
+    public Priority Priority { get; init; }
     public TaskDate? DueDate { get; init; }
 
-    public TaskItem(int id, string title, int priority)
+    public TaskItem(int id, string title, Priority priority)
     {
         Id = id;
         Title = title;
         Priority = priority;
     }
 
-    static string ConvertPriority(int p)
+    static string ConvertPriority(Priority p)
     {
         return p switch
         {
-            1 => "Низкий",
-            2 => "Средний",
-            3 => "Высокий",
+            Priority.Low => "Низкий",
+            Priority.Medium => "Средний",
+            Priority.High => "Высокий",
             _ => "Неизвестный"
         };
     }

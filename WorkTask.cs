@@ -1,8 +1,8 @@
-public class WorkTask : TaskItem
+public class WorkTask : TaskItem, IHasId
 {
     string Project { get; }
     int EstimateHours { get; }
-    public WorkTask(int id, string title, int priority, string project, int estimateHours) : base(id, title, priority)
+    public WorkTask(int id, string title, Priority priority, string project, int estimateHours) : base(id, title, priority)
     {
         if (estimateHours < 0) throw new ArgumentOutOfRangeException();
 

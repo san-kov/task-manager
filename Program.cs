@@ -20,11 +20,7 @@ for (int i = 0; i < 5; i++)
     int priority = 1;
 
 
-    if (int.TryParse(priorityText, out priority))
-    {
-        if (priority < 1 || priority > 3) throw new ArgumentOutOfRangeException();
-    }
-    else
+    if (!int.TryParse(priorityText, out priority) || priority < 1 || priority > 3)
     {
         Console.WriteLine("Неправильный диапазон");
         i--;
@@ -89,11 +85,19 @@ foreach (var t in printable)
 Console.WriteLine("Введите приоритет для фильтрации");
 string? filter = Console.ReadLine();
 
+TaskFilter isHigh = t => t.Priority == Priority.High;
+TaskFilter hasDeadline = t => t.DueDate is not null;
+
+
+TaskFilter highWithDeadline = t => isHigh(t) && hasDeadline(t);
+foreach (var t in repo.Where(x => highWithDeadline(x))) t.PrintInfo();
+
 try
 {
     int filterInt = int.Parse(filter!);
+    TaskFilter byPriority = t => t.Priority == (Priority)filterInt;
 
-    foreach (var i in repo.GetAll().Where(i => i.Priority == (Priority)filterInt))
+    foreach (var i in repo.Where(task => byPriority(task)))
     {
         i.PrintInfo();
 

@@ -4,4 +4,7 @@ public interface IRepository<T> where T : IHasId
     bool Remove(int id);
     T? FindById(int id);
     IReadOnlyList<T> GetAll();
+
+    IEnumerable<T> Where(Func<T, bool> predicate);
+
 }

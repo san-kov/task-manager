@@ -21,4 +21,7 @@ public class InMemoryRepository<T> : IRepository<T> where T : IHasId
     {
         return _items.RemoveAll(x => x.Id == id) > 0;
     }
+
+    public IEnumerable<T> Where(Func<T, bool> predicate) =>
+        _items.Where(predicate);
 }

@@ -1,6 +1,8 @@
 ﻿Console.InputEncoding = System.Text.Encoding.GetEncoding("utf-16");
 IRepository<TaskItem> repo = new InMemoryRepository<TaskItem>();
 
+repo.OnItemAdded += t => Console.WriteLine($"[Событие] Добавлена задача: {t.Title}");
+
 for (int i = 0; i < 5; i++)
 {
     Console.WriteLine("Введите название задачи:");

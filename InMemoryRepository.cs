@@ -2,9 +2,13 @@
 public class InMemoryRepository<T> : IRepository<T> where T : IHasId
 {
     private readonly List<T> _items = new();
+
+    public event Action<T>? OnItemAdded;
+
     public void Add(T item)
     {
         _items.Add(item);
+        OnItemAdded?.Invoke(item);
     }
 
     public T? FindById(int id)

@@ -6,5 +6,6 @@ public interface IRepository<T> where T : IHasId
     IReadOnlyList<T> GetAll();
 
     IEnumerable<T> Where(Func<T, bool> predicate);
+    event Action<T>? OnItemAdded;
 
 }
